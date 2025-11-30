@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+        }
+        .font-handwriting {
+            font-family: 'Great Vibes', cursive;
+        }
+        
+        /* New Animation and Layout System */
+        .app-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* This is key to the sliding effect */
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1rem;
+            background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+            /* Smooth transition for sliding effect */
+            transition: transform 0.8s cubic-bezier(0.86, 0, 0.07, 1);
+            transform: translateX(100%); /* Start all screens off-screen to the right */
+        }
+        
+        .screen.active {
+            transform: translateX(0); /* Active screen is centered */
+        }
+
+        .screen.previous {
+            transform: translateX(-100%); /* Move passed screens off-screen to the left */
+        }
+        
+        /* Unique background for the first screen */
+        #wish-screen {
+             background: linear-gradient(135deg, #2df21b 0%, #f3ff4e 100%);
+        }
+
+        .confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* NEW AND UPDATED ANIMATIONS */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        @keyframes wobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-2deg); }
+            75% { transform: rotate(2deg); }
+        }
+
+        @keyframes text-focus-in {
+            0% { filter: blur(12px); opacity: 0; }
+            100% { filter: blur(0px); opacity: 1; }
+        }
+
+        .animate-float {
+            animation: float 5s ease-in-out infinite;
+        }
+        
+        .animate-wobble {
+            animation: wobble 7s ease-in-out infinite;
+        }
+
+        .animate-text-focus-in {
+            animation: text-focus-in 1s cubic-bezier(0.550, 0.085, 0.680, 0.530) 0.5s both;
+        }
+        
+        /* New Gallery Image Transitions */
+        #gallery-image {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+        #gallery-image.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+
+        <!-- Screen 1: Initial Birthday Wish (Starts as active) -->
+        <div id="wish-screen" class="screen active">
+            <h1 class="font-handwriting text-6xl md:text-9xl text-white drop-shadow-lg animate-text-focus-in">Happy Birthday!</h1>
+            <p class="mt-4 text-xl md:text-2xl text-white/90 animate-text-focus-in" style="animation-delay: 0.8s;">Mousii </p>
+            <button id="proceed-to-cake" class="mt-8 bg-white text-orange-500 font-bold py-3 px-8 rounded-full shadow-xl hover:bg-orange-100 transform hover:scale-110 transition-all duration-300">
+                Tap for a surprise!
+            </button>
+        </div>
+
+        <!-- Screen 2: Cake Cutting -->
+        <div id="cake-screen" class="screen">
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 animate-text-focus-in">Make a wish...</h2>
+            <div class="relative w-80 h-80 md:w-96 md:h-96 animate-float animate-wobble">
+                <!-- SVG Cake -->
+                <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-2xl">
+                    <defs>
+                        <radialGradient id="flameGradient">
+                            <stop offset="0%" stop-color="#FFD700" />
+                            <stop offset="100%" stop-color="#FFA500" />
+                        </radialGradient>
+                        <linearGradient id="icingGradient" x1="0.5" y1="0" x2="0.5" y2="1">
+                            <stop offset="0%" stop-color="#FFFACD"/>
+                            <stop offset="100%" stop-color="#FFD700"/>
+                        </linearGradient>
+                        <linearGradient id="cakeGradient" x1="0.5" y1="0" x2="0.5" y2="1">
+                            <stop offset="0%" stop-color="#8D6E63"/>
+                            <stop offset="100%" stop-color="#6B4F4E"/>
+                        </linearGradient>
+                    </defs>
+            
+                    <!-- Cake Stand -->
+                    <ellipse cx="50" cy="90" rx="35" ry="5" fill="#F0F5FF"/>
+                    <rect x="46" y="85" width="8" height="5" fill="#E0E7FF"/>
+                    <ellipse cx="50" cy="85" rx="25" ry="3" fill="#FFFFFF"/>
+            
+                    <!-- Bottom Cake Layer -->
+                    <path d="M25 70 C 25 75, 75 75, 75 70 L 75 83 C 75 88, 25 88, 25 83 Z" fill="url(#cakeGradient)"/>
+            
+                    <!-- Filling -->
+                    <path d="M25 68 C 25 73, 75 73, 75 68 L 75 70 C 75 75, 25 75, 25 70 Z" fill="#F5F5DC"/>
+            
+                    <!-- Top Cake Layer -->
+                    <path d="M25 55 C 25 60, 75 60, 75 55 L 75 68 C 75 73, 25 73, 25 68 Z" fill="url(#cakeGradient)"/>
+                    
+                    <!-- Icing -->
+                    <ellipse cx="50" cy="55" rx="25" ry="5" fill="url(#icingGradient)"/>
+                    <path d="M25,55 C 25,60, 28,58, 32,61 C 36,64, 40,60, 45,63 C 50,66, 55,62, 60,64 C 65,66, 70,61, 75,58 L 75,55 Z" fill="url(#icingGradient)"/>
+            
+                    <!-- Sprinkles -->
+                    <circle cx="40" cy="54.5" r="1" fill="#FF5959"/>
+                    <circle cx="50" cy="55" r="1" fill="#59FFC5"/>
+                    <circle cx="60" cy="56" r="1" fill="#5973FF"/>
+                    <circle cx="45" cy="56" r="1" fill="#FF59C4"/>
+                    <circle cx="55" cy="54" r="1" fill="#BE59FF"/>
+            
+                    <!-- Candle -->
+                    <path d="M49,20 Q50,15 51,20 T49,20" fill="url(#flameGradient)" id="flame">
+                        <animate attributeName="d" values="M49,20 Q50,15 51,20 T49,20; M49,20 Q48,16 50,18 T51,20; M49,20 Q52,16 50,18 T49,20; M49,20 Q50,15 51,20 T49,20" dur="1s" repeatCount="indefinite" />
+                    </path>
+                    <rect x="48" y="25" width="4" height="15" fill="#FFFACD" />
+                </svg>
+            </div>
+            <button id="cut-the-cake" class="mt-8 bg-white text-yellow-500 font-bold py-3 px-8 rounded-full shadow-xl hover:bg-yellow-100 transform hover:scale-110 transition-all duration-300">
+                Cut the Cake!
+            </button>
+        </div>
+
+        <!-- Screen 3: Image Gallery -->
+        <div id="gallery-screen" class="screen">
+            <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 text-center animate-text-focus-in">Remembering the good times...</h2>
+            <div class="w-full max-w-md bg-white/80 backdrop-blur-sm rounded-2xl shadow-2xl p-4 transition duration-300 transform hover:scale-105">
+                <div class="relative w-full aspect-square rounded-lg overflow-hidden">
+                    <img id="gallery-image" src="" alt="Friendship Memories" class="w-full h-full object-cover">
+                    <div id="loading-spinner" class="absolute inset-0 bg-gray-200 flex items-center justify-center">
+                        <svg class="animate-spin h-10 w-10 text-pink-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center mt-4">
+                    <button id="prev-image" class="bg-pink-500 text-white p-3 rounded-full shadow-lg hover:bg-pink-600 transform hover:scale-110 transition-all duration-300"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg></button>
+                    <p id="image-counter" class="text-gray-700 font-semibold"></p>
+                    <button id="next-image" class="bg-pink-500 text-white p-3 rounded-full shadow-lg hover:bg-pink-600 transform hover:scale-110 transition-all duration-300"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURATION: ADD YOUR IMAGES HERE! ---
+        const imageUrls = [
+            "https://i.ibb.co/Kp7mvCss/2171454b-8692-4516-8b8c-d006974a12f2.jpg",
+            "https://i.ibb.co/ds863bgK/3146be8a-b2ff-409e-9ec8-153aa6279df6.jpg",
+            "https://i.ibb.co/NdQHLY6P/c242514e-6164-4525-aaab-b98f3d4a97cc.jpg",
+            "https://i.ibb.co/chLD9gzT/8711e1c5-80b9-4244-adfd-377046bb81c7.jpg",
+            "https://i.ibb.co/DD846Nv9/69b4412f-293b-4a7d-8127-16cba86d99ce.jpg",
+            ];
+        // --- END CONFIGURATION ---
+
+        const wishScreen = document.getElementById('wish-screen');
+        const cakeScreen = document.getElementById('cake-screen');
+        const galleryScreen = document.getElementById('gallery-screen');
+
+        const proceedToCakeBtn = document.getElementById('proceed-to-cake');
+        const cutTheCakeBtn = document.getElementById('cut-the-cake');
+
+        const galleryImage = document.getElementById('gallery-image');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const prevBtn = document.getElementById('prev-image');
+        const nextBtn = document.getElementById('next-image');
+        const imageCounter = document.getElementById('image-counter');
+        const flame = document.getElementById('flame');
+
+        let currentImageIndex = 0;
+
+        // Transition from Wish to Cake
+        proceedToCakeBtn.addEventListener('click', () => {
+            wishScreen.classList.remove('active');
+            wishScreen.classList.add('previous');
+            cakeScreen.classList.add('active');
+        });
+
+        // Transition from Cake to Gallery
+        cutTheCakeBtn.addEventListener('click', () => {
+            flame.style.transition = 'opacity 0.5s';
+            flame.style.opacity = '0';
+            startConfetti();
+            
+            // Wait a moment before sliding to the next screen
+            setTimeout(() => {
+                cakeScreen.classList.remove('active');
+                cakeScreen.classList.add('previous');
+                galleryScreen.classList.add('active');
+                updateGallery(true); // Pass true for the first load
+            }, 500);
+        });
+
+        // Gallery functionality
+        function updateGallery(isFirstLoad = false) {
+            loadingSpinner.style.display = 'flex';
+            galleryImage.classList.remove('visible'); // Fade out and shrink old image
+            
+            const timeout = isFirstLoad ? 0 : 500; // No delay on first load
+
+            setTimeout(() => {
+                const img = new Image();
+                img.src = imageUrls[currentImageIndex];
+                img.onload = () => {
+                    galleryImage.src = img.src;
+                    loadingSpinner.style.display = 'none';
+                    galleryImage.classList.add('visible'); // Fade in and grow new image
+                };
+                img.onerror = () => {
+                    galleryImage.src = `https://placehold.co/600x600/f87171/ffffff?text=Image+Error`;
+                    loadingSpinner.style.display = 'none';
+                    galleryImage.classList.add('visible');
+                }
+            }, timeout);
+            
+            imageCounter.textContent = `${currentImageIndex + 1} / ${imageUrls.length}`;
+        }
+
+        nextBtn.addEventListener('click', () => {
+            currentImageIndex = (currentImageIndex + 1) % imageUrls.length;
+            updateGallery();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            currentImageIndex = (currentImageIndex - 1 + imageUrls.length) % imageUrls.length;
+            updateGallery();
+        });
+
+        // Confetti effect logic
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const confettiCtx = confettiCanvas.getContext('2d');
+        let confettiPieces = [];
+        const numberOfPieces = 200;
+        const colors = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#ffeb3b', '#ffc107', '#ff9800'];
+        let confettiAnimationId;
+
+        function resizeCanvas() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+
+        function startConfetti() {
+            resizeCanvas();
+            confettiPieces = [];
+            for (let i = 0; i < numberOfPieces; i++) {
+                confettiPieces.push(createConfettiPiece());
+            }
+            if (confettiAnimationId) cancelAnimationFrame(confettiAnimationId);
+            animateConfetti();
+        }
+
+        function createConfettiPiece() {
+            return {
+                x: Math.random() * confettiCanvas.width,
+                y: -20,
+                w: Math.random() * 10 + 5,
+                h: Math.random() * 10 + 5,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                speed: Math.random() * 3 + 2,
+                rotation: Math.random() * 360,
+                rotationSpeed: Math.random() * 4 - 2
+            };
+        }
+        
+        function animateConfetti() {
+            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            confettiPieces.forEach((piece, index) => {
+                piece.y += piece.speed;
+                piece.rotation += piece.rotationSpeed;
+                if (piece.y > confettiCanvas.height + 20) {
+                   confettiPieces[index] = createConfettiPiece();
+                }
+                confettiCtx.save();
+                confettiCtx.fillStyle = piece.color;
+                confettiCtx.translate(piece.x + piece.w / 2, piece.y + piece.h / 2);
+                confettiCtx.rotate(piece.rotation * Math.PI / 180);
+                confettiCtx.fillRect(-piece.w / 2, -piece.h / 2, piece.w, piece.h);
+                confettiCtx.restore();
+            });
+            confettiAnimationId = requestAnimationFrame(animateConfetti);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+    </script>
+</body>
+</html>
+
+V
